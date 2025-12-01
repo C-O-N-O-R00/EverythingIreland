@@ -1,28 +1,25 @@
-import cheerio from "cheerio";
-
 export default async function handler(req, res) {
   const query = req.query.search || "";
 
   try {
-    const url = `https://www.dunnesstoresgrocery.com/sm/delivery/rsid/258/results?q=${encodeURIComponent(query)}`;
+    const url = `https://www.dunnesstoresgrocery.com/api/search?search_term=${encodeURIComponent(
+      query
+    )}&page=1`;
+
     const response = await fetch(url);
-    const html = await response.text();
-    const $ = cheerio.load(html);
+    const data = await response.json();
 
-    const products = [];
+    const results = data.results?.map((item) => ({
+      name: item?.product?.name,
+      price: item?.product?.price,
+      image: item?.product?.image_uri
+        ? `https://www.dunnesstoresgrocery.com${item.product.image_uri}`
+        : null
+    })) || [];
 
-    $(".product").each((_, el) => {
-      const name = $(el).find(".product-name").text().trim();
-      const price = $(el).find(".product-price").text().trim();
-      const image = $(el).find("img").attr("src");
-
-      if (name && price) {
-        products.push({ name, price, image });
-      }
-    });
-
-    res.status(200).json(products);
+    res.status(200).json(results);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Dunnes scraper failed" });
   }
 }

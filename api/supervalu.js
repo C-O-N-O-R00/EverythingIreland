@@ -4,16 +4,17 @@ export default async function handler(req, res) {
   const query = req.query.search || "";
 
   try {
-    const url = `https://www.tesco.ie/groceries/en-IE/search?query=${encodeURIComponent(query)}`;
+    const url = `https://shop.supervalu.ie/shopping/search/allaisles?q=${encodeURIComponent(query)}`;
     const response = await fetch(url);
+
     const html = await response.text();
     const $ = cheerio.load(html);
 
     const products = [];
 
-    $(".product-list--list-item").each((_, el) => {
-      const name = $(el).find(".product-details--content .styled__Text-sc-1cxc8c-0").text().trim();
-      const price = $(el).find(".value").text().trim();
+    $(".product-list-item").each((_, el) => {
+      const name = $(el).find(".product-list-item-details-title").text().trim();
+      const price = $(el).find(".product-list-item-price-per-sellable-unit").text().trim();
       const image = $(el).find("img").attr("src");
 
       if (name && price) {
@@ -23,8 +24,7 @@ export default async function handler(req, res) {
 
     res.status(200).json(products);
   } catch (error) {
-    res.status(500).json({ error: "Tesco scraper failed" });
+    console.error(error);
+    res.status(500).json({ error: "SuperValu scraper failed" });
   }
 }
-
-

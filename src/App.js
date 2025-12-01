@@ -1,25 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+
+import Home from "./pages/Home";
+import Grocery from "./pages/Grocery";
+import Electricity from "./pages/Electricity";
+import Transport from "./pages/Transport";
+import Alerts from "./pages/Alerts";
+import About from "./pages/About";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div style={{ padding: "20px", fontFamily: "Arial" }}>
+        <nav style={{ marginBottom: "20px" }}>
+          <Link to="/" style={{ marginRight: "15px" }}>Home</Link>
+          <Link to="/grocery" style={{ marginRight: "15px" }}>Grocery</Link>
+          <Link to="/electricity" style={{ marginRight: "15px" }}>Electricity</Link>
+          <Link to="/transport" style={{ marginRight: "15px" }}>Transport</Link>
+          <Link to="/alerts" style={{ marginRight: "15px" }}>Alerts</Link>
+          <Link to="/about">About</Link>
+        </nav>
+
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/grocery" element={<Grocery />} />
+          <Route path="/electricity" element={<Electricity />} />
+          <Route path="/transport" element={<Transport />} />
+          <Route path="/alerts" element={<Alerts />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
 export default App;
+
